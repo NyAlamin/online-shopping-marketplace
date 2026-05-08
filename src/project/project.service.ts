@@ -30,6 +30,12 @@ export class ProjectService {
     return project;
   }
 
+   async fullUpdate(id: number, dto: CreateProjectDto) {
+    const project = await this.findOne(id);
+    Object.assign(project, dto);
+    return this.repo.save(project);
+  }
+
   async update(id: number, dto: UpdateProjectDto) {
     const project = await this.findOne(id);
     Object.assign(project, dto);

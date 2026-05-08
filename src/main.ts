@@ -5,11 +5,10 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // // Enable CORS (important for frontend/Postman)
-  // app.enableCors();
-
-  // Global API prefix
-  //app.setGlobalPrefix('api');
+   app.enableCors({
+     origin: 'http://localhost:3001',
+    credentials: true,
+    });
 
   // Global Validation Pipe
   app.useGlobalPipes(
@@ -25,7 +24,7 @@ async function bootstrap() {
 
   await app.listen(3000);
 
-  console.log("Server running on http://localhost:3000/api");
+  console.log("Server running on http://localhost:3000/");
 }
 
 bootstrap();

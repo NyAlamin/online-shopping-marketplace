@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsEnum, IsOptional } from 'class-validator';
+import { UserRole } from '../user.entity';
 
 export class RegisterDto {
   @IsString({ message: 'Name must be a string' })
@@ -12,4 +13,8 @@ export class RegisterDto {
   @IsString({ message: 'Password must be a string' })
   @MinLength(6, { message: 'Password must be at least 6 characters' })
   password!: string;
+
+  @IsOptional()
+  @IsEnum(UserRole, { message: 'Role must be manager or employee' })
+  role?: UserRole;
 }

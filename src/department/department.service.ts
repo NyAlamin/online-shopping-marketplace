@@ -30,6 +30,12 @@ export class DepartmentService {
     return department;
   }
 
+  async fullUpdate(id: number, dto: CreateDepartmentDto) {
+    const department = await this.findOne(id);
+    Object.assign(department, dto);
+    return this.repo.save(department);
+  }
+
   async update(id: number, dto: UpdateDepartmentDto) {
     const department = await this.findOne(id);
     Object.assign(department, dto);
@@ -37,7 +43,15 @@ export class DepartmentService {
   }
 
   async remove(id: number) {
-    const department = await this.findOne(id);
-    return this.repo.remove(department);
-  }
+    const department = await this.repo.findOneBy({ id });
+    if (!department){
+            throw new NotFoundException('Department not found');
+
+    } 
+
+    await this.repo.remove(department);
+    return { message: 'Department deleted successfully' };
+    
+}
+
 }

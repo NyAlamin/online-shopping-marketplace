@@ -25,8 +25,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
       transport: {
         service: 'gmail',
         auth: {
-          user: 'use your email here for sending email',      
-          pass: 'and your email app password here', 
+          user: 'professional.alamin77gc@gmail.com',      
+          pass: 'pxdz xbnq viyy zoxs', 
         },
       },
     }),

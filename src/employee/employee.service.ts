@@ -38,14 +38,19 @@ export class EmployeeService {
       department,
     });
 
-    try {
-      return await this.employeeRepo.save(employee);
-    } catch (error: any) {
-      if (error.code === '23505') {
-        throw new BadRequestException('Email already exists');
+  
+      //return await this.employeeRepo.save(employee);
+
+      
+
+      const savedEmployee = await this.employeeRepo.save(employee);
+      return {
+        id: savedEmployee.id,
+        fullName: savedEmployee.fullName,
       }
-      throw new BadRequestException('Failed to create employee');
-    }
+      
+       
+    
   }
 
   findAll() {
@@ -68,6 +73,38 @@ export class EmployeeService {
 
     return employee;
   }
+
+  async fullUpdate(id: number, dto: CreateEmployeeDto) {
+    const employee = await this.findOne(id);
+
+    const department = await this.departmentRepo.findOneBy({
+      id: dto.departmentId,
+    });
+    if (!department) {
+      throw new NotFoundException(
+        `Department with ID ${dto.departmentId} not found`,
+      );
+    }
+
+    Object.assign(employee, {
+      fullName: dto.fullName,
+      email: dto.email,
+      salary: dto.salary,
+      department,
+    });
+
+    try {
+      return await this.employeeRepo.save(employee);
+    } catch (error: any) {
+      if (error.code === '23505') {
+        throw new BadRequestException('Email already exists');
+      }
+      throw new BadRequestException('Failed to update employee');
+    }
+  }
+
+
+  
 
   async update(id: number, dto: UpdateEmployeeDto) {
     const employee = await this.findOne(id);
@@ -107,7 +144,7 @@ export class EmployeeService {
       throw new BadRequestException('Failed to delete employee');
     }
   }
-
+//Relationship CRUD operations
   async assignProject(employeeId: number, projectId: number) {
     const employee = await this.findOne(employeeId);
 
@@ -160,5 +197,16 @@ export class EmployeeService {
     } catch {
       throw new BadRequestException('Failed to remove project');
     }
+  }
+  getEmployeeProjects(id: number) {
+    return this.employeeRepo.findOne({
+      where: { id },
+      relations: ['projects'],
+    }).then(employee => {
+      if (!employee) {
+        throw new NotFoundException(`Employee with ID ${id} not found`);
+      }
+      return employee.projects;
+    }); 
   }
 }
